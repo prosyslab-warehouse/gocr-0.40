@@ -1,0 +1,139 @@
+.\"             -*-Nroff-*-
+.\" Copyright 2000 Red Hat, Inc.
+.TH GOCR 1 "14 May 2003" "Linux" "User's Manual"
+.SH NAME
+gocr \- command line OCR tool
+.SH SYNOPSIS
+.B gocr
+[\fIOPTION\fR] [\fB-i\fR] \fIpnm file\fR
+.fi
+.SH DESCRIPTION
+gocr is an optical character recognition program that can be used from
+the command line.  It takes input in PNM, PGM, PBM, PPM, or PCX
+format, and writes recognized text to \fBstdout\fR.  If the \fIpnm
+file\fR is a single dash, PNM data is read from \fBstdin\fR.
+If gzip, bzip2 and netpbm-progs are installed and your system supports popen(3)
+also pnm.gz, pnm.bz2, png, jpg, jpeg, tiff,
+gif, bmp, ps (only single pages) and eps are supported as input files
+(not as input stream), where pnm can be replaced
+by one of ppm, pgm and pbm.
+.SH OPTIONS
+.TP
+\fB\-h\fR
+show usage information
+.TP
+\fB\-i\fR \fIfile\fR
+read input from \fIfile\fR (or \fBstdin\fR if \fIfile\fR is a single
+dash)
+.TP
+\fB\-o\fR \fIfile\fR
+send output to \fIfile\fR instead of \fBstdout\fR
+.TP
+\fB\-e\fR \fIfile\fR
+send errors to \fIfile\fR instead of \fBstderr\fR or to \fBstdout\fR
+if \fIfile\fR is a dash
+.TP
+\fB\-x\fR \fIfile\fR
+progress output to \fIfile\fR
+(\fIfile\fR can be a file name, a fifo name or a file descriptor 1...255)
+.TP
+\fB\-p\fR \fIpath\fR
+database path (including final slash, default is ./db/)
+.TP
+\fB\-f\fR \fIformat\fR
+output \fIformat\fR (ISO8859_1 TeX HTML UTF8 ASCII)
+.TP
+\fB\-l\fR \fIlevel\fR
+set grey level to \fIlevel\fR (0<160<=255, default:
+0 for autodetect)
+.TP
+\fB\-d\fR \fIsize\fR
+set dust size (clusters smaller than this are removed); the default
+is 10
+.TP
+\fB\-s\fR \fInum\fR
+set spacewidth/dots (default: 0 for autodetect)
+.TP
+\fB\-v\fR \fIverbosity\fR
+be verbose; \fIverbosity\fR is a bitfield
+.TP
+\fB\-c \fIstring\fR
+only verbose output of characters from \fIstring\fR
+.TP
+\fB\-C \fIstring\fR
+only recognise characters from \fIstring\fR
+.TP
+\fB\-m\fR \fImodes\fR
+set operation modes; \fImodes\fR is a bitfield
+.TP
+\fB\-n\fR \fIbool\fR
+if \fIbool\fR is non-zero, only recognise numbers
+(this is now obsolete, use -C "0123456789")
+.PP
+The verbosity is specified as a bitfield:
+.TP 10
+.B 1
+print more info
+.TP
+.B 2
+list shapes of boxes (see -c)
+.TP
+.B 4
+list pattern of boxes (see -c)
+.TP
+.B 8
+print pattern after recognition
+.TP
+.B 16
+print line information
+.TP
+.B 32
+create outXX.pgm
+.PP
+The operation modes are:
+.TP 10
+.B 2
+use database (early development)
+.TP
+.B 4
+layout analysis, zoning (development)
+.TP
+.B 8
+don't compare unrecognized characters
+.TP
+.B 16
+don't divide overlapping characters
+.TP
+.B 32
+don't do context correction
+.TP
+.B 64
+character packing (development)
+.TP
+.B 130
+extend database, prompts user (128+2, early development)
+.TP
+.B 256
+switch off the OCR engine (makes sense together with -m 2)
+.SH
+.SH AUTHOR
+Joerg Schulenburg <jschulen@gmx.de>
+.br
+First version of man page by Tim Waugh <twaugh@redhat.com>
+.SH VERSION INFORMATION
+This man page documents \fBgocr\fR, version 0.37.
+.SH REPORTING BUGS
+Report bugs to <jschulen@gmx.de>
+.SH SEE ALSO
+More details can be found at /usr/share/doc/gocr-\fBX.XX\fR/gocr.html.
+.SH EXAMPLES
+.TP
+.B gocr -v 33 text1.pbm
+output verbose information, out30.bmp is created to see details of
+recognition process
+.TP
+.B gocr -v 7 -c _YV text1.pbm
+verbose output for unknown chars and chars Y and V
+.TP
+.B djpeg -pnm -gray text.jpg | gocr -
+convert a jpeg file to pnm format and input via pipe
